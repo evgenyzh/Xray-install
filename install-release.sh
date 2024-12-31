@@ -22,6 +22,7 @@ JSON_PATH=${JSON_PATH:-/usr/local/etc/xray}
 
 # Set this variable only if you are starting xray with multiple configuration files:
 # export JSONS_PATH='/usr/local/etc/xray'
+JSONS_PATH='/usr/local/etc/xray/config.d/'
 
 # Set this variable only if you want this script to check all the systemd unit file:
 # export check_all_service_files='yes'
@@ -501,7 +502,7 @@ install_xray() {
   # Install Xray configuration file to $JSONS_PATH
   if [[ -n "$JSONS_PATH" ]] && [[ ! -d "$JSONS_PATH" ]]; then
     install -d "$JSONS_PATH"
-    for BASE in 00_log 01_api 02_dns 03_routing 04_policy 05_inbounds 06_outbounds 07_transport 08_stats 09_reverse; do
+    for BASE in 01-log 02-api 03-dns 04-routing 05-policy 06-inbounds 07-outbounds 08-transport 09-stats 10-reverse 14-observatory; do
       echo '{}' > "${JSONS_PATH}/${BASE}.json"
     done
     CONFDIR='1'
