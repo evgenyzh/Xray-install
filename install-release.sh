@@ -98,6 +98,9 @@ PROXY=''
 # --purge
 PURGE='0'
 
+# --update-timer ?
+UPDATE_TIMER='0'
+
 curl() {
   $(type -P curl) -L -q --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
 }
@@ -233,7 +236,7 @@ judgment_parameters() {
   while [[ "$#" -gt '0' ]]; do
     case "$1" in
       'install')
-        INSTALL='1'
+        INSTALL='0'
         ;;
       'install-geodata')
         INSTALL_GEODATA='1'
@@ -309,6 +312,17 @@ judgment_parameters() {
         fi
         LOGROTATE='1'
         LOGROTATE_TIME="$2"
+        shift
+        ;;
+      '--update-timer')
+        if ! grep -qE '^(([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{4}-[0-9]{2}|[0-9]{4}|\*-\*-\*|[0-9]{2}-[0-9]{2}|[0-9]{4}-[0-9]{2}-\*|[0-9]{4}-\*-\*|[0-9]{4}-\*|\*|[0-9]{2}-[0-9]{2}|[0-9]{2}:?[0-9]{2}(:[0-9]{2})?|Mon|Tue|Wed|Thu|Fri|Sat|Sun)(/([0-9]+))?|daily|weekly|monthly|yearly|hourly|minutely|quarterly|semi-annually)$' <<< "$2"; then
+          echo "error: Wrong format of period, it should be a valid systemd OnCalendar time specification."
+          exit 1
+        fi
+        UPDATE_TIMER='1'
+        UPDATE_PERIOD="$2"
+        echo "UPDATE_TIMER=$UPDATE_TIMER"
+        echo "UPDATE_PERIOD=$UPDATE_PERIOD"
         shift
         ;;
       *)
